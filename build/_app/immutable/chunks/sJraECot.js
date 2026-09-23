@@ -1,0 +1,1 @@
+import{U as e}from"./CBhY9wGU.js";import"./BNUTWyoK.js";import{o as t}from"./DarxYZLC.js";var n=e(null),r=e(!0);async function i(){r.set(!0);try{let e=await t();if(e?.status===`success`&&e.data)return n.set(e.data),e.data}catch{n.set(null)}finally{r.set(!1)}return null}export{n,i as t};

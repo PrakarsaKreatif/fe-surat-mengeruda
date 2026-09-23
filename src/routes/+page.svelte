@@ -1,0 +1,197 @@
+<script>
+    import { onMount } from 'svelte';
+    import { getTemplates } from '$lib/api.js';
+
+    let templates = $state([]);
+    let loading = $state(true);
+
+    onMount(async () => {
+        try {
+            const res = await getTemplates();
+            if (res?.status === 'success') {
+                templates = res.data;
+            }
+        } catch (e) {
+            console.error('Gagal mengambil template:', e);
+        } finally {
+            loading = false;
+        }
+    });
+
+    const steps = [
+        {
+            num: '01',
+            title: 'Daftar & Unggah KTP',
+            desc: 'Buat akun warga dengan mengisi NIK serta melampirkan berkas KTP untuk verifikasi identitas secara resmi oleh Admin Desa.',
+            icon: 'M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z'
+        },
+        {
+            num: '02',
+            title: 'Ajukan Surat Online',
+            desc: 'Pilih jenis surat yang diperlukan seperti Surat Domisili, SKU, atau SKTM, lalu isi formulir singkat sesuai kebutuhan Anda.',
+            icon: 'M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10'
+        },
+        {
+            num: '03',
+            title: 'Unduh PDF Ber-QR Code',
+            desc: 'Setelah permohonan disetujui, surat digital resmi yang dilengkapi tanda tangan elektronik QR Code langsung siap diunduh.',
+            icon: 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3'
+        }
+    ];
+</script>
+
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-[#1e3a8a] via-blue-900 to-indigo-950 text-white overflow-hidden py-24 lg:py-32">
+    <!-- Grid pattern & glowing radial overlay -->
+    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center animate-fadeIn">
+            <!-- Animated Floating Badge -->
+            <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-bold uppercase tracking-wider text-blue-200 mb-8 shadow-lg backdrop-blur-md animate-float">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Pelayanan Administrasi Warga Digital 24 Jam</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+                Layanan <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-emerald-300">E-Surat</span> Resmi<br />Desa Mengeruda
+            </h1>
+
+            <p class="text-lg sm:text-xl text-blue-100/90 leading-relaxed mb-10 font-normal max-w-2xl mx-auto">
+                Ajukan surat keterangan domisili, usaha, dan administrasi desa lainnya dengan mudah, cepat, dan transparan dari mana saja tanpa harus antre di Kantor Desa.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a 
+                    href="/dashboard" 
+                    class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold text-base shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-1 transition-all duration-300 text-center flex items-center justify-center gap-2 group"
+                >
+                    <span>Ajukan Surat Sekarang</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 group-hover:translate-x-1 transition-transform">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                </a>
+                <a 
+                    href="/validasi" 
+                    class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-base border border-white/25 backdrop-blur-md transition-all duration-300 text-center hover:-translate-y-1 hover:shadow-lg"
+                >
+                    Cek Validasi QR Code
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3 Langkah Mudah -->
+<section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16 animate-fadeIn">
+            <span class="text-xs font-extrabold text-blue-600 uppercase tracking-widest block mb-2">Alur Pelayanan</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+                3 Langkah Mudah Pengajuan Surat
+            </h2>
+            <p class="text-slate-600 text-base">
+                Proses pengajuan surat desa kini jauh lebih ringkas dengan perlindungan verifikasi identitas yang aman.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {#each steps as step, index}
+                <div 
+                    class="relative bg-slate-50 rounded-3xl p-8 border border-slate-200/80 hover:border-blue-400 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group"
+                    style="animation-delay: {index * 150}ms;"
+                >
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-14 h-14 rounded-2xl bg-blue-100 text-[#1e3a8a] flex items-center justify-center group-hover:bg-[#1e3a8a] group-hover:text-white group-hover:scale-110 transition-all duration-300 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-7 h-7">
+                                <path stroke-linecap="round" stroke-linejoin="round" d={step.icon} />
+                            </svg>
+                        </div>
+                        <span class="text-4xl font-black text-slate-300/80 font-mono group-hover:text-blue-200 transition-colors">{step.num}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-[#1e3a8a] transition-colors">{step.title}</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">{step.desc}</p>
+                </div>
+            {/each}
+        </div>
+    </div>
+</section>
+
+<!-- Daftar Layanan Surat -->
+<section class="py-24 bg-slate-100/80 border-t border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-14">
+            <div>
+                <span class="text-xs font-extrabold text-blue-600 uppercase tracking-widest block mb-2">Daftar Layanan</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                    Jenis Surat yang Tersedia
+                </h2>
+            </div>
+            <a href="/register" class="text-sm font-bold text-[#1e3a8a] hover:text-blue-700 flex items-center gap-1 mt-4 md:mt-0 group">
+                <span>Daftar sebagai warga sekarang</span>
+                <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+            </a>
+        </div>
+
+        {#if loading}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {#each Array(3) as _}
+                    <div class="h-52 bg-white rounded-3xl border border-slate-200 animate-pulse p-7"></div>
+                {/each}
+            </div>
+        {:else if templates.length === 0}
+            <div class="bg-white rounded-3xl p-12 text-center border border-slate-200">
+                <p class="text-slate-500">Belum ada template surat yang terdaftar di sistem.</p>
+            </div>
+        {:else}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {#each templates as t}
+                    <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-blue-300 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group">
+                        <div>
+                            <div class="inline-block px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs font-bold mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                Dokumen Resmi
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#1e3a8a] transition-colors">{t.name}</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-8">{t.description || 'Surat resmi Pemerintah Desa Mengeruda.'}</p>
+                        </div>
+
+                        <a 
+                            href="/dashboard" 
+                            class="inline-flex items-center justify-between w-full px-5 py-3 rounded-2xl bg-slate-50 hover:bg-blue-50 text-[#1e3a8a] text-sm font-bold border border-slate-200 hover:border-blue-200 transition-all group/btn"
+                        >
+                            <span>Ajukan Surat Ini</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </a>
+                    </div>
+                {/each}
+            </div>
+        {/if}
+    </div>
+</section>
+
+<!-- CTA QR Verification -->
+<section class="py-20 bg-gradient-to-r from-[#1e3a8a] to-blue-900 text-white relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <h2 class="text-2xl sm:text-3xl font-extrabold mb-4">
+            Ingin Memverifikasi Keaslian Surat yang Anda Terima?
+        </h2>
+        <p class="text-blue-100 text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed">
+            Setiap surat yang diterbitkan oleh sistem E-Surat Desa Mengeruda dilengkapi dengan QR Code. Pindai atau masukkan token surat pada halaman validasi publik untuk memastikan keabsahan dokumen.
+        </p>
+        <a 
+            href="/validasi" 
+            class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white text-[#1e3a8a] hover:bg-blue-50 font-bold text-sm shadow-2xl hover:shadow-white/20 transform hover:-translate-y-1 transition-all duration-300"
+        >
+            <span>Buka Halaman Validasi Surat</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </a>
+    </div>
+</section>
