@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.DEV ? '/api/surat' : (import.meta.env.VITE_BACKEND_URL || 'http://localhost:8003') + '/api/surat';
+export const API_BASE = import.meta.env.DEV ? '/api/surat' : (import.meta.env.VITE_BACKEND_URL || 'http://localhost:8003') + '/api/surat';
 
 const api = axios.create({
     baseURL: API_BASE,
