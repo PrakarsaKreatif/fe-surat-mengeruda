@@ -1,4 +1,4 @@
-import { S as escape_html, r as derived, t as attr_class } from "./server.js";
+import { h as escape_html, i as attr_class, o as derived } from "./index-server.js";
 //#region src/lib/components/StatusBadge.svelte
 function StatusBadge($$renderer, $$props) {
 	let { status = "pending", label = null } = $$props;

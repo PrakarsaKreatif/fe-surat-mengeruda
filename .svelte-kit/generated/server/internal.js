@@ -26,7 +26,7 @@ export const options = {
 		app: ({ head, body, assets, nonce, env }) => "<!doctype html>\n<html lang=\"id\" class=\"scroll-smooth\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>E-Surat - Pelayanan Surat Menyurat Digital Desa Mengeruda</title>\n\t\t<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n\t\t<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n\t\t<link href=\"https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap\" rel=\"stylesheet\">\n\t\t" + head + "\n\t</head>\n\t<body data-sveltekit-preload-data=\"hover\" class=\"bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col\">\n\t\t<div style=\"display: contents\" class=\"flex-1 flex flex-col\">" + body + "</div>\n\t</body>\n</html>\n",
 		error
 	},
-	version_hash: "1pzltpy"
+	version_hash: "vvkdv5"
 };
 
 export async function get_hooks() {
