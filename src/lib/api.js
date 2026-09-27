@@ -156,7 +156,11 @@ export async function deleteFamilyMember(id) {
 }
 
 export function getKtpUrl(userId) {
-    return `${API_BASE}/admin/users/${userId}/ktp`;
+    let token = '';
+    if (typeof localStorage !== 'undefined') {
+        token = localStorage.getItem('sso_token') || '';
+    }
+    return `${API_BASE}/admin/users/${userId}/ktp?token=${token}`;
 }
 
 export async function createTemplate(data) {
