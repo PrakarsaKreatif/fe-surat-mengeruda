@@ -31,9 +31,13 @@ export async function fetchAuthUser() {
                 if (data.user) {
                     localStorage.setItem('sso_user', JSON.stringify(data.user));
                 }
-            } else if (ssoCheck.status === 401) {
-                // Pasti tidak valid / expired
-                throw new Error('Token invalidated by SSO');
+            } else {
+                const errData = await ssoCheck.json().catch(() => ({}));
+                if (ssoCheck.status === 401 || (errData.exception && errData.exception.includes('JWTAuth'))) {
+                    // Pasti tidak valid / expired / blacklisted
+                    throw new Error('Token invalidated by SSO');
+                }
+                // Jika error lain (misal 500 karena DB SSO mati), biarkan jatuh ke getCurrentUser() sebagai toleransi.
             }
         } catch (fetchError) {
             // Jika Network Error (CORS, server mati, salah port), JANGAN paksa logout
