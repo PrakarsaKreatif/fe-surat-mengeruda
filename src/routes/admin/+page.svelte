@@ -68,13 +68,10 @@
     async function loadAllData() {
         loading = true;
         try {
-            const [reqRes, pendRes, allRes, setRes] = await Promise.all([
-                getAdminLetterRequests(filterStatus),
-                getPendingUsers(),
-                getAllUsers(),
-                getSettings()
-            ]);
-            
+            const reqRes = await getAdminLetterRequests(filterStatus);
+            const pendRes = await getPendingUsers();
+            const allRes = await getAllUsers();
+            const setRes = await getSettings();
             if (reqRes.status === 'success') letterRequests = reqRes.data;
             console.log('PENDING USERS RES:', pendRes);
             if (pendRes.status === 'success') pendingUsers = pendRes.data;
