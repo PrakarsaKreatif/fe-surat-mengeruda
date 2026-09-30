@@ -84,6 +84,18 @@ export async function submitLetterRequest(templateId, formData) {
     return response.data;
 }
 
+export async function acceptLetter(requestId) {
+    await initCsrf();
+    const response = await api.post(`/permohonan/${requestId}/accept`);
+    return response.data;
+}
+
+export async function requestRevision(requestId, reason) {
+    await initCsrf();
+    const response = await api.post(`/permohonan/${requestId}/revision`, { reason });
+    return response.data;
+}
+
 export async function getMyRequests() {
     const response = await api.get('/permohonan/my');
     return response.data;
@@ -140,6 +152,11 @@ export async function uploadKk(formData) {
     return response.data;
 }
 
+export async function updateProfile(data) {
+    const response = await ssoApi.put('/profile', data);
+    return response.data;
+}
+
 export async function getFamilyMembers() {
     const response = await ssoApi.get('/profile/family');
     return response.data;
@@ -161,6 +178,22 @@ export function getKtpUrl(userId) {
         token = localStorage.getItem('sso_token') || '';
     }
     return `${API_BASE}/admin/users/${userId}/ktp?token=${token}`;
+}
+
+export function getKkUrl(userId) {
+    let token = '';
+    if (typeof localStorage !== 'undefined') {
+        token = localStorage.getItem('sso_token') || '';
+    }
+    return `${API_BASE}/admin/users/${userId}/kk?token=${token}`;
+}
+
+export function getMyKkUrl() {
+    let token = '';
+    if (typeof localStorage !== 'undefined') {
+        token = localStorage.getItem('sso_token') || '';
+    }
+    return `${SSO_API_BASE}/profile/kk?token=${token}`;
 }
 
 export async function createTemplate(data) {
@@ -186,6 +219,14 @@ export async function getAdminLetterRequests(status = 'all') {
 export async function approveLetterRequest(requestId) {
     await initCsrf();
     const response = await api.post(`/admin/surat/${requestId}/approve`);
+    return response.data;
+}
+
+export async function updateLetterRequestData(requestId, formData) {
+    await initCsrf();
+    const response = await api.put(`/admin/surat/${requestId}`, {
+        form_data: formData
+    });
     return response.data;
 }
 

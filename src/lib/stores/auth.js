@@ -15,8 +15,8 @@ export async function fetchAuthUser() {
         // 1. Verifikasi & Refresh token ke SSO Backend (jika server SSO hidup)
         const ssoApiUrl = import.meta.env.VITE_PUBLIC_SSO_API_URL || 'http://localhost:8001/api';
         try {
-            const ssoCheck = await fetch(`${ssoApiUrl}/refresh`, {
-                method: 'POST',
+            const ssoCheck = await fetch(`${ssoApiUrl}/user`, {
+                method: 'GET',
                 headers: { 
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -24,12 +24,9 @@ export async function fetchAuthUser() {
             });
             
             if (ssoCheck.ok) {
-                const data = await ssoCheck.json();
-                if (data.access_token) {
-                    localStorage.setItem('sso_token', data.access_token);
-                }
-                if (data.user) {
-                    localStorage.setItem('sso_user', JSON.stringify(data.user));
+                const user = await ssoCheck.json();
+                if (user) {
+                    localStorage.setItem('sso_user', JSON.stringify(user));
                 }
             } else {
                 const errData = await ssoCheck.json().catch(() => ({}));
@@ -66,4 +63,25 @@ export async function fetchAuthUser() {
         isLoadingAuth.set(false);
     }
     return null;
+}
+
+export async function logoutUser() {
+    const token = localStorage.getItem('sso_token');
+    if (token) {
+        const ssoApiUrl = import.meta.env.VITE_PUBLIC_SSO_API_URL || 'http://localhost:8001/api';
+        try {
+            await fetch(`${ssoApiUrl}/logout`, {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+        } catch (e) {
+            console.error('Logout error:', e);
+        }
+    }
+    localStorage.removeItem('sso_token');
+    localStorage.removeItem('sso_user');
+    userStore.set(null);
 }

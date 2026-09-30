@@ -22,6 +22,20 @@
             border: 'border-rose-200',
             defaultLabel: 'Ditolak',
             dot: 'bg-rose-500'
+        },
+        review: {
+            bg: 'bg-blue-100',
+            text: 'text-blue-800',
+            border: 'border-blue-200',
+            defaultLabel: 'Peninjauan Warga',
+            dot: 'bg-blue-500'
+        },
+        revision: {
+            bg: 'bg-orange-100',
+            text: 'text-orange-800',
+            border: 'border-orange-200',
+            defaultLabel: 'Diperbaiki',
+            dot: 'bg-orange-500'
         }
     };
 

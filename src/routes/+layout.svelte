@@ -2,7 +2,7 @@
     import './layout.css';
     import { onMount } from 'svelte';
     import { page } from '$app/stores';
-    import { userStore, fetchAuthUser, isLoadingAuth } from '$lib/stores/auth.js';
+    import { userStore, fetchAuthUser, isLoadingAuth, logoutUser } from '$lib/stores/auth.js';
     import Navbar from '$lib/components/Navbar.svelte';
     import Footer from '$lib/components/Footer.svelte';
     import Sidebar from '$lib/components/Sidebar.svelte';
@@ -38,9 +38,11 @@
         fetchAuthUser();
     });
 
-    function handleLogoutCallback() {
-        userStore.set(null);
-        window.location.href = import.meta.env.VITE_PUBLIC_SSO_URL || 'http://localhost:5176/';
+    async function handleLogoutCallback() {
+        await logoutUser();
+        const ssoBase = import.meta.env.VITE_PUBLIC_SSO_URL || 'http://localhost:5176';
+        const ssoUrl = ssoBase.endsWith('/') ? ssoBase.slice(0, -1) : ssoBase;
+        window.location.href = ssoUrl + '/logout';
     }
 </script>
 

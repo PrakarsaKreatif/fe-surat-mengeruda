@@ -21,6 +21,17 @@
     let editor;
     let quillInstance;
 
+    // Notification Modal State
+    let isNotifModalOpen = $state(false);
+    let notifModalMessage = $state('');
+    let notifModalType = $state('success');
+
+    function showNotification(message, type = 'success') {
+        notifModalMessage = message;
+        notifModalType = type;
+        isNotifModalOpen = true;
+    }
+
     userStore.subscribe((val) => {
         user = val;
     });
@@ -132,15 +143,19 @@
                 });
                 return values;
             };
-
+            
+            // Hapus blok TabBlot lama karena kita akan menggunakan tab karakter asli (\t)
+            
             quillInstance = new Quill(editor, {
                 theme: 'snow',
                 placeholder: 'Ketik isi template surat di sini...\nKetik simbol "#" untuk memanggil variabel otomatis (seperti Nama, NIK, Isian Formulir).',
                 modules: {
                     toolbar: [
                         [{ 'header': [1, 2, 3, false] }],
+                        [{ 'size': ['small', false, 'large', 'huge'] }],
                         ['bold', 'italic', 'underline', 'strike'],
                         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'indent': '-1'}, { 'indent': '+1' }],
                         [{ 'align': [] }],
                         ['clean']
                     ],
@@ -163,8 +178,29 @@
                                 renderList(matches, searchTerm);
                             }
                         }
+                    },
+                    keyboard: {
+                        bindings: {
+                            tab: {
+                                key: 9,
+                                handler: function() {
+                                    const range = this.quill.getSelection();
+                                    if (range) {
+                                        this.quill.insertText(range.index, "\t");
+                                        this.quill.setSelection(range.index + 1);
+                                    }
+                                    return false;
+                                }
+                            }
+                        }
                     }
                 }
+            });
+            
+            // Tambahkan Custom Matcher agar Quill mempertahankan karakter \t saat paste HTML
+            quillInstance.clipboard.addMatcher('span.ql-tab', function(node, delta) {
+                const Delta = Quill.import('delta');
+                return new Delta().insert('\t');
             });
             
             if (currentTemplate && currentTemplate.content) {
@@ -179,6 +215,8 @@
                     }
                     return match;
                 });
+                // Konversi \t dari database menjadi span penanda agar ditangkap oleh custom matcher
+                restoredHtml = restoredHtml.replace(/\t/g, '<span class="ql-tab"></span>');
                 
                 quillInstance.clipboard.dangerouslyPasteHTML(restoredHtml);
             }
@@ -217,7 +255,8 @@
             }
             initQuill();
             if (quillInstance) {
-                quillInstance.clipboard.dangerouslyPasteHTML(tpl.content || '');
+                // Konversi \t dari database menjadi span penanda agar ditangkap oleh custom matcher
+                // Sudah ditangani di dalam initQuill()
             }
         }, 100);
     }
@@ -238,12 +277,12 @@
     }
 
     async function saveTemplate() {
-        if (!formName) return alert('Nama surat wajib diisi!');
+        if (!formName) return showNotification('Nama surat wajib diisi!', 'error');
         
         // Validasi field
         for (let i = 0; i < formFieldsArray.length; i++) {
             if (!formFieldsArray[i].name || !formFieldsArray[i].label) {
-                return alert('Pastikan semua field memiliki Name ID dan Label!');
+                return showNotification('Pastikan semua field memiliki Name ID dan Label!', 'error');
             }
             // Hapus spasi dari Name ID dan jadikan huruf kecil (snake_case/camelCase)
             formFieldsArray[i].name = formFieldsArray[i].name.toLowerCase().replace(/\s+/g, '_');
@@ -279,16 +318,16 @@
         try {
             if (currentTemplate) {
                 await updateTemplate(currentTemplate.id, payload);
-                alert('Template berhasil diupdate!');
+                showNotification('Template berhasil diperbarui!', 'success');
             } else {
                 await createTemplate(payload);
-                alert('Template baru berhasil dibuat!');
+                showNotification('Template baru berhasil dibuat!', 'success');
             }
             closeEdit();
             loadTemplates();
         } catch (e) {
             console.error(e);
-            alert('Gagal menyimpan template.');
+            showNotification(e.response?.data?.message || 'Gagal menyimpan template.', 'error');
         }
     }
 
@@ -451,11 +490,55 @@
     </div>
 </div>
 
+<!-- Notification Modal -->
+{#if isNotifModalOpen}
+    <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
+        <div class="bg-white rounded-2xl max-w-sm w-full overflow-hidden shadow-2xl border border-slate-200 text-center animate-scaleUp">
+            <div class={`px-6 py-8 ${notifModalType === 'success' ? 'bg-emerald-50' : 'bg-rose-50'}`}>
+                {#if notifModalType === 'success'}
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-xl text-emerald-900 mb-2">Berhasil!</h3>
+                {:else}
+                    <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-xl text-rose-900 mb-2">Terjadi Kesalahan</h3>
+                {/if}
+                <p class={`text-sm ${notifModalType === 'success' ? 'text-emerald-700' : 'text-rose-700'}`}>
+                    {notifModalMessage}
+                </p>
+            </div>
+            <div class="px-6 py-4 bg-white border-t border-slate-100">
+                <button 
+                    onclick={() => isNotifModalOpen = false} 
+                    class={`w-full py-2.5 rounded-xl font-bold text-sm text-white transition-colors ${notifModalType === 'success' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700'}`}
+                >
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+{/if}
 <style>
     /* Quill Editor adjustments */
     :global(.ql-editor) {
         font-family: inherit;
         font-size: 1rem;
         min-height: 300px;
+        tab-size: 4;
+        -moz-tab-size: 4;
+    }
+    :global(.ql-editor p) {
+        white-space: pre-wrap !important;
+    }
+    :global(.ql-tab) {
+        display: inline-block;
+        width: 30px; /* Lebar indentasi tab */
     }
 </style>

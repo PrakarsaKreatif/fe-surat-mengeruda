@@ -29,21 +29,28 @@ declare module "$app/types" {
 	type MatcherParam<M> = M extends (param : string) => param is (infer U extends string) ? U : string;
 
 	export interface AppTypes {
-		RouteId(): "/" | "/admin" | "/admin/templates" | "/auth-receiver" | "/dashboard" | "/login" | "/register" | "/validasi";
+		RouteId(): "/" | "/admin" | "/admin/keluarga" | "/admin/kop" | "/admin/surat" | "/admin/templates" | "/admin/warga" | "/auth-receiver" | "/dashboard" | "/dashboard/keluarga" | "/dashboard/profile" | "/dashboard/surat" | "/login" | "/register" | "/validasi";
 		RouteParams(): {
 			
 		};
 		LayoutParams(): {
 			"/": Record<string, never>;
 			"/admin": Record<string, never>;
+			"/admin/keluarga": Record<string, never>;
+			"/admin/kop": Record<string, never>;
+			"/admin/surat": Record<string, never>;
 			"/admin/templates": Record<string, never>;
+			"/admin/warga": Record<string, never>;
 			"/auth-receiver": Record<string, never>;
 			"/dashboard": Record<string, never>;
+			"/dashboard/keluarga": Record<string, never>;
+			"/dashboard/profile": Record<string, never>;
+			"/dashboard/surat": Record<string, never>;
 			"/login": Record<string, never>;
 			"/register": Record<string, never>;
 			"/validasi": Record<string, never>
 		};
-		Pathname(): "/" | "/admin" | "/admin/templates" | "/auth-receiver" | "/dashboard" | "/login" | "/register" | "/validasi";
+		Pathname(): "/" | "/admin" | "/admin/keluarga" | "/admin/kop" | "/admin/surat" | "/admin/templates" | "/admin/warga" | "/auth-receiver" | "/dashboard" | "/dashboard/keluarga" | "/dashboard/profile" | "/dashboard/surat" | "/login" | "/register" | "/validasi";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/logo.png" | "/robots.txt" | string & {};
 	}

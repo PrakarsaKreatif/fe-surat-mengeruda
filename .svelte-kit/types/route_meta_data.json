@@ -6,13 +6,34 @@
 	"/admin": [
 		"src/routes/+layout.js"
 	],
+	"/admin/keluarga": [
+		"src/routes/+layout.js"
+	],
+	"/admin/kop": [
+		"src/routes/+layout.js"
+	],
+	"/admin/surat": [
+		"src/routes/+layout.js"
+	],
 	"/admin/templates": [
+		"src/routes/+layout.js"
+	],
+	"/admin/warga": [
 		"src/routes/+layout.js"
 	],
 	"/auth-receiver": [
 		"src/routes/+layout.js"
 	],
 	"/dashboard": [
+		"src/routes/+layout.js"
+	],
+	"/dashboard/keluarga": [
+		"src/routes/+layout.js"
+	],
+	"/dashboard/profile": [
+		"src/routes/+layout.js"
+	],
+	"/dashboard/surat": [
 		"src/routes/+layout.js"
 	],
 	"/login": [
