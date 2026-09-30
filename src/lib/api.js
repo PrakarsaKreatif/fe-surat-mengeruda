@@ -131,7 +131,7 @@ export async function rejectKk(userId) {
 }
 
 // === SSO / KELUARGA API (Direct to SSO) ===
-const SSO_API_BASE = import.meta.env.VITE_SSO_API_URL || 'http://localhost:8002/api';
+const SSO_API_BASE = import.meta.env.VITE_PUBLIC_SSO_API_URL || import.meta.env.VITE_SSO_API_URL || 'http://localhost:8002/api';
 const ssoApi = axios.create({
     baseURL: SSO_API_BASE,
     headers: { 'Accept': 'application/json' }
